@@ -5,12 +5,12 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Notifications\Notifiable;use Illuminate\Support\Facades\DB;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use  HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -34,15 +34,66 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
+    public function getRolesUser()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        $roleName = "";
+        $i = 0;
+        foreach ($this->roles as $role) {
+            $roleName .= $role->name;
+            if ($i < sizeof($this->roles) - 1) {
+                $roleName .= ",";
+            }
+            $i++;
+        }
+        return $roleName;
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id');
+    }
+
+    public function hasRole($role)
+    {
+        return $this->roles()->where("name", $role)->first() !== null;
+    }
+    public function checkAdmin()
+    {
+        return $this->roles()->where("name", "Admin")->first() !== null;
+    }
+    public function isAuthorized($object, $operation)
+    {
+        if ($this->checkAdmin()) {
+            return true;
+        } else {
+            $query = Db::table('role_permissions')
+                ->where('object', $object)
+                ->where('operation', $operation)
+                ->join('user_roles', 'user_roles.role_id', '=', 'role_permissions.role_id')
+                ->where('user_roles.user_id', $this->id)
+                ->get();
+            if ($query->count() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+    public function assignRole($id)
+    {
+        $this->roles()->attach($id);
+    }
+    public function removeRole($id)
+    {
+        $this->roles()->detach($id);
     }
 }
