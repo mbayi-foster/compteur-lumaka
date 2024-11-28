@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "827611641265",
+    "project_id": "compteur-lumaka",
+    "storage_bucket": "compteur-lumaka.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:827611641265:android:77778fcac5b16af1773990",
+        "android_client_info": {
+          "package_name": "com.lumaka.conteur"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCH6ptAN0c55TRlx8vUh0WrYvKciWj78gA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:827611641265:android:5f2eec516140cd76773990",
+        "android_client_info": {
+          "package_name": "com.mycompany.conteurlumaka"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCH6ptAN0c55TRlx8vUh0WrYvKciWj78gA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
